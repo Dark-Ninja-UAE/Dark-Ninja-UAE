@@ -1,0 +1,63 @@
+USE [Hospital]
+GO
+/****** Object:  StoredProcedure [dbo].[EMR_SP_CompanyDrugFavoritesGet]    Script Date: 02/08/2022 7:09:58 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+/*-- ==================================================================================
+Author     :		mirzad ahamed	
+Create date:        01-Aug-2018
+Description:	    GET THE  EMR_DR_FAVORITES
+
+
+Modification History
+--------------------------------------------------------------------------------------------
+Date		Bug Ref. No					Description						Modified by
+--------------------------------------------------------------------------------------------
+exec EMR_SP_CompanyDrugFavoritesGet
+
+ 
+ 
+--------------------------------------------------------------------------------------------*/
+ 
+ALTER  procedure [dbo].[EMR_SP_CompanyDrugFavoritesGet] 
+		 @Criteria varchar(max) =null 
+AS 
+BEGIN 
+
+DECLARE @QryString varchar(max)   
+	  SET @QryString='
+	SELECT top  1000
+		  EDF_CODE AS Code
+		 ,EDF_NAME AS Description
+		 ,EDF_PRICE AS Price
+		 ,HAS_SERV_NAME  AS GenericName
+		 ,HAS_PRODUCTNAME  AS ProductName
+	 FROM EMR_DR_FAVORITES LEFT JOIN HMS_DRUG_AGRMT_SERVICE ON  HAS_SERV_ID = EDF_CODE   '
+
+
+ IF NOT  @Criteria IS NULL      
+
+ BEGIN      
+
+  SET @QryString = @QryString + ' WHERE ' + @Criteria    + ' order by Description ' 
+        
+
+ END      
+    
+
+ IF @@ERROR <> 0      
+
+ BEGIN      
+
+  RETURN -1      
+
+ END      
+  
+ EXEC (@QryString)   
+End
+
+
